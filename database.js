@@ -26,7 +26,7 @@ const books =[
 const authors = [
     {
         id: 1,
-        nmae: "Pavan",
+        name: "Pavan",
         books: ["12345Book","1234566789Secret"],
     },
     {

@@ -7,6 +7,9 @@ const database = require('./database');
 //Initilization
 const booky = express();
 
+//configurations
+ booky.use(express.json());
+
 /*
 Route           /
 Description     get all books
@@ -78,7 +81,7 @@ Access          PUBLIC
 Parameters      isbn
 Method          GET
 */
-booky.get("/author/:isbn", (req, res) => {
+booky.get("/author/a/:isbn", (req, res) => {
     const getSpecificAuthors = database.authors.filter((author) =>
       author.books.includes(req.params.isbn)
     );
@@ -89,7 +92,7 @@ booky.get("/author/:isbn", (req, res) => {
       });
     }
   
-    return res.json({ authors: getSpecificAuthors });
+    return res.json({ author: getSpecificAuthors });
   });
 
   /*
@@ -125,5 +128,77 @@ Method          G ET
   
     return res.json({ publications: getSpecificpublications });
   });
+
+   /*
+Route           /book/add
+Description     add new book
+Access          PUBLIC
+Parameters      NONE
+Method          POST
+*/
+  booky.post("/book/add", (req, res) => {
+    const { newBook } = req.body;
+    database.books.push(newBook);
+    return res.json({ books: database.books });
+  });
+
+     /*
+Route           /author/add
+Description     add new author
+Access          PUBLIC
+Parameters      NONE
+Method          POST
+*/
+booky.post("/author/add", (req, res) => {
+  const { newAuthor } = req.body;
+  database.authors.push(newAuthor);
+  return res.json({ authors : database.authors });
+});
+
+     /*
+Route           /book/update/title
+Description     add new author
+Access          PUBLIC
+Parameters      isbn
+Method          PUT
+*/
+
+booky.put('/book/update/title/:isbn', (req, res) => {
+  database.books.forEach((book) => {
+    if(book.ISBN === req.params.isbn){
+        book.title = req.body.newBookTitle;
+        return;
+    }
+  });
+  return res.json({ books: database.books });
+  
+});
+
+// Route           /book/update/title
+// Description     add new author
+// Access          PUBLIC
+// Parameters      isbn
+// Method          PUT
+
+
+booky.put("/book/update/author/:isbn/:authorId", (req, res)=>{
+  // update book Database
+
+  database.books.forEach((book)=> {
+    if(book.ISBN === req.params.isbn){
+      return book.author.push(parseInt(req.params.authorId));
+    }
+  });
+ 
+// update author Database
+database.authors.forEach((author)=>{
+  if(author.id === parseInt(req.params.authorId))
+  return authors.books.push(req.params.isbn);
+});
+
+return res.json({books: database.books, authors: database.authors});
+
+});
+
 
 booky.listen(3000,() => console.log("hey server is running"));
